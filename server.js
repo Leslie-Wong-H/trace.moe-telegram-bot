@@ -331,12 +331,15 @@ const privateMessageHandler = async (message) => {
   });
 
   if (result.video) {
-    console.log("fetching video");
     const videoLink = messageIsMute(message) ? `${result.video}&mute` : result.video;
+    console.log(`fetching video: ${videoLink}`);
     const video = await fetch(videoLink, { method: "HEAD" });
+    console.log("video got");
     if (video.ok && video.headers.get("content-length") > 0) {
+      console.log("video sending");
       await sendChatAction(message.chat.id, "upload_video");
       await sendVideo(message.chat.id, videoLink);
+      console.log("video sent");
     }
   }
 };
@@ -380,14 +383,17 @@ const groupMessageHandler = async (message) => {
   });
 
   if (result.video) {
-    console.log("fetching video");
     const videoLink = messageIsMute(message) ? `${result.video}&mute` : result.video;
+    console.log(`fetching video: ${videoLink}`);
     const video = await fetch(videoLink, { method: "HEAD" });
+    console.log("video got");
     if (video.ok && video.headers.get("content-length") > 0) {
+      console.log("video sending");
       await sendChatAction(message.chat.id, "upload_video");
       await sendVideo(message.chat.id, videoLink, {
         reply_to_message_id: responding_msg.message_id,
       });
+      console.log("video sent");
     }
   }
 };
