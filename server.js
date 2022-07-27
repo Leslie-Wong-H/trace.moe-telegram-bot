@@ -14,6 +14,7 @@ const {
   RAILWAY_STATIC_URL,
   RAILWAY_GIT_COMMIT_SHA,
   HEROKU_SLUG_COMMIT,
+  TRACE_MOE_API_URL = "https://api.trace.moe",
 } = process.env;
 
 const TELEGRAM_API = "https://api.telegram.org";
@@ -179,7 +180,7 @@ const submitSearch = (imageFileURL, message) =>
     while (trial > 0 && (!response || response.status === 503 || response.status === 402)) {
       trial--;
       response = await fetch(
-        `https://api.trace.moe/search?${[
+        `${TRACE_MOE_API_URL}/search?${[
           `uid=tg${message.from.id}`,
           `url=${encodeURIComponent(imageFileURL)}`,
           "cutBorders=1",
