@@ -331,6 +331,7 @@ const privateMessageHandler = async (message) => {
   });
 
   if (result.video) {
+    console.log("fetching video");
     const videoLink = messageIsMute(message) ? `${result.video}&mute` : result.video;
     const video = await fetch(videoLink, { method: "HEAD" });
     if (video.ok && video.headers.get("content-length") > 0) {
@@ -379,6 +380,7 @@ const groupMessageHandler = async (message) => {
   });
 
   if (result.video) {
+    console.log("fetching video");
     const videoLink = messageIsMute(message) ? `${result.video}&mute` : result.video;
     const video = await fetch(videoLink, { method: "HEAD" });
     if (video.ok && video.headers.get("content-length") > 0) {
