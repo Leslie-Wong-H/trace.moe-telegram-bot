@@ -307,6 +307,7 @@ const getImageFromMessage = async (message) => {
 };
 
 const privateMessageHandler = async (message) => {
+  console.log("Got private message");
   const responding_msg = message.reply_to_message ? message.reply_to_message : message;
   const imageURL = await getImageFromMessage(responding_msg);
   if (!imageURL) {
@@ -346,8 +347,10 @@ const privateMessageHandler = async (message) => {
 
 const groupMessageHandler = async (message) => {
   if (!messageIsMentioningBot(message)) {
+    console.log("Not mentioned");
     return;
   }
+  console.log("Got group message");
   const responding_msg = message.reply_to_message ? message.reply_to_message : message;
   const imageURL = await getImageFromMessage(responding_msg);
   if (!imageURL) {
