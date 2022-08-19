@@ -420,7 +420,7 @@ app.post("/", (req, res) => {
 app.get("/", (req, res) => {
   return res.send(
     // `<meta http-equiv="Refresh" content="0; URL=https://t.me/${app.locals.botName ?? ""}">`
-    `<meta http-equiv="Refresh" content="0; URL=https://www.ultraman-shot.cc/">`
+    `<meta http-equiv="Refresh" content="1; URL=https://www.ultraman-shot.cc/">`
   );
 });
 
