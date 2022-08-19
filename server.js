@@ -188,11 +188,15 @@ const submitSearch = (imageFileURL, message) =>
         TRACE_MOE_KEY ? { headers: { "x-trace-key": TRACE_MOE_KEY } } : {}
       ).catch((e) => {
         trial = 0;
-        return resolve({ text: "`trace.moe API error, please try again later.`" });
+        return resolve({
+          text: "`trace.moe API error, please try again later or visit ultraman-shot.cc instead.`",
+        });
       });
       if (!response) {
         trial = 0;
-        return resolve({ text: "`trace.moe API error, please try again later.`" });
+        return resolve({
+          text: "`trace.moe API error, please try again later or visit ultraman-shot.cc instead.`",
+        });
       }
       if (response.status === 503 || response.status === 402) {
         await new Promise((resolve) =>
@@ -208,7 +212,9 @@ const submitSearch = (imageFileURL, message) =>
       return resolve({ text: "`You exceeded the search limit, please try again later`" });
     }
     if (response.status >= 400) {
-      return resolve({ text: "`trace.moe API error, please try again later.`" });
+      return resolve({
+        text: "`trace.moe API error, please try again later or visit ultraman-shot.cc instead.`",
+      });
     }
     const searchResult = await response.json();
     if (response.status >= 400 || searchResult.error) {
@@ -413,7 +419,8 @@ app.post("/", (req, res) => {
 
 app.get("/", (req, res) => {
   return res.send(
-    `<meta http-equiv="Refresh" content="0; URL=https://t.me/${app.locals.botName ?? ""}">`
+    // `<meta http-equiv="Refresh" content="0; URL=https://t.me/${app.locals.botName ?? ""}">`
+    `<meta http-equiv="Refresh" content="0; URL=https://www.ultraman-shot.cc/">`
   );
 });
 
