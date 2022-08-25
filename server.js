@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 import child_process from "child_process";
 import express from "express";
 import rateLimit from "express-rate-limit";
+import douban from "./douban.js";
 
 const {
   PORT = 3000,
@@ -423,5 +424,7 @@ app.get("/", (req, res) => {
     `<meta http-equiv="Refresh" content="0; URL=https://www.ultraman-shot.cc/">`
   );
 });
+
+app.post("/douban", douban);
 
 app.listen(PORT, "0.0.0.0", () => console.log(`server listening on port ${PORT}`));
