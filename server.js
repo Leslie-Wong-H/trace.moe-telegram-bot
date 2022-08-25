@@ -72,6 +72,14 @@ const getHelpMessage = (botName) =>
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
+
+app.use((req, res, next) => {
+  res.set("Access-Control-Allow-Origin", "*");
+  res.set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+  res.set("Access-Control-Allow-Headers", "Content-Type, x-trace-secret");
+  next();
+});
+
 app.use(
   rateLimit({
     max: 100, // limit each IP to 100 requests
