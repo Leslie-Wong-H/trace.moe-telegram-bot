@@ -5,6 +5,7 @@ import child_process from "child_process";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import douban from "./douban.js";
+import poster from "./poster.js";
 
 const {
   PORT = 3000,
@@ -426,5 +427,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/douban", douban);
+
+app.get("/poster/:filename", poster);
 
 app.listen(PORT, "0.0.0.0", () => console.log(`server listening on port ${PORT}`));
