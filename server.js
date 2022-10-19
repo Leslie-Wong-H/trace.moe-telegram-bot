@@ -4,6 +4,7 @@ import express from "express";
 import rateLimit from "express-rate-limit";
 import douban from "./douban.js";
 import poster from "./poster.js";
+import proxy from "./proxy.js";
 
 const { PORT = 3000 } = process.env;
 
@@ -63,5 +64,7 @@ app.get("/", (req, res) => {
 app.post("/douban", douban);
 
 app.get("/poster/:filename", poster);
+
+app.get("/proxy", proxy);
 
 app.listen(PORT, "0.0.0.0", () => console.log(`server listening on port ${PORT}`));
