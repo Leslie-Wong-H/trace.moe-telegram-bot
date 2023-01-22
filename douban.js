@@ -15,8 +15,13 @@ export default async (req, res) => {
     const { ids = [] } = req.body;
     const db = client.db("ultraman");
     let collection = db.collection("douban");
-    console.log(ids);
-    const mongoQueries = ids.map((id) => ({
+    console.log(typeof ids, ids);
+    let checkedIds = ids;
+    if (!Array.isArray(ids)) {
+      // When application/x-www-form-urlencoded instead of application/json
+      checkedIds = ids.split(",");
+    }
+    const mongoQueries = checkedIds.map((id) => ({
       doubanId: id,
     }));
     const response = await Promise.all(
