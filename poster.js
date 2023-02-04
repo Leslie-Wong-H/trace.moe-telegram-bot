@@ -27,7 +27,7 @@ function error500(e, res) {
 export default async (req, res) => {
   const params = {
     Bucket: AWS_BUCKET,
-    Key: `${req.params.filename}`,
+    Key: `poster/${req.params.filename}`,
   };
 
   if (req.method === "GET") {
