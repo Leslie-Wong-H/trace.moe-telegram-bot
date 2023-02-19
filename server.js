@@ -72,4 +72,7 @@ app.get("/poster/:filename", poster);
 
 app.get("/proxy", proxy);
 
+// For the purpose of qq-bot to verify https address
+app.use(express.static("public"));
+
 app.listen(PORT, "0.0.0.0", () => console.log(`server listening on port ${PORT}`));
