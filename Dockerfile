@@ -11,4 +11,5 @@ WORKDIR /app
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install --production
 COPY server.js douban.js poster.js proxy.js ./
+COPY public/ ./public/
 CMD [ "node", "server.js" ]
