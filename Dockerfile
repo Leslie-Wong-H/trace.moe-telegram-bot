@@ -10,6 +10,6 @@ ENV NODE_ENV=production
 WORKDIR /app
 COPY ["package.json", "package-lock.json*", "./"]
 RUN npm install --production
-COPY server.js douban.js poster.js proxy.js ./
+COPY server.js douban.js poster.js proxy.js getImgUrl.js getImgBuffer.js mediaCheck.js ./
 COPY public/ ./public/
 CMD [ "node", "server.js" ]
