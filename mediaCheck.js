@@ -4,10 +4,16 @@ import fetch from "node-fetch";
 const { wechatAppId, wechatSecret, douyinAppId, douyinSecret } = process.env;
 
 export default async (req, res) => {
-  const { platform = "", image = "", wechatopenid = "" } = req.body;
+  const { platform = "", image = "", code = "" } = req.body;
 
   let checkResponse, checkResponseJSON, accessTokenResponse, accessToken;
-  if (platform === "wechat") {
+  if (platform === "weapp") {
+    const wechatUserIdentity = await fetch(
+      `https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code&appid=${wechatAppId}&secret=${wechatSecret}&js_code=${code}`
+    );
+
+    const wechatopenid = (await wechatUserIdentity.json())["openid"];
+
     accessTokenResponse = await fetch(
       `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${wechatAppId}&secret=${wechatSecret}`
     ).catch((err) => console.error(err));
@@ -29,7 +35,7 @@ export default async (req, res) => {
     );
 
     checkResponseJSON = await checkResponse.json();
-  } else if (platform === "douyin") {
+  } else if (platform === "tt") {
     accessTokenResponse = await fetch("https://developer.toutiao.com/api/apps/v2/token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

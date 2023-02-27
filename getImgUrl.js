@@ -4,7 +4,12 @@ import path from "path";
 import crypto from "crypto";
 
 export default async (req, res) => {
-  const image = req.body;
+  let image;
+  if (req.files?.length) {
+    image = req.files[0].buffer;
+  } else if (req.body?.length) {
+    image = req.body;
+  }
 
   let md5 = Date.now();
   const imageHash = crypto.createHash("md5");
@@ -24,7 +29,7 @@ export default async (req, res) => {
 
   fs.writeFileSync(path.join(tempPath, tempFileName), image);
   console.log(`write file ${tempFileName}`);
-  res.send(`/get-img-buffer?name=${tempFileName}`);
+  res.send(`https://${req.headers.host}/get-img-buffer?name=${tempFileName}`);
 
   // delete tempFile 1 minutes later
   await new Promise((resolve) => setTimeout(resolve, 60 * 1000));
