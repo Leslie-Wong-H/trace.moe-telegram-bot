@@ -3,6 +3,8 @@ import child_process from "child_process";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import bodyParser from "body-parser";
+import multer from "multer";
+
 import douban from "./douban.js";
 import poster from "./poster.js";
 import proxy from "./proxy.js";
@@ -47,7 +49,7 @@ app.use(
 app.use(
   bodyParser.raw({
     type: ["image/jpeg", "image/png"],
-    limit: "10mb",
+    limit: "25mb",
   })
 );
 
@@ -85,7 +87,11 @@ app.get("/poster/:filename", poster);
 
 app.get("/proxy", proxy);
 
-app.post("/get-img-url", getImgUrl);
+app.post(
+  "/get-img-url",
+  multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } }).any(),
+  getImgUrl
+);
 
 app.get("/get-img-buffer", getImgBuffer);
 
