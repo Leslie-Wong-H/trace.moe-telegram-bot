@@ -1,7 +1,8 @@
 import "dotenv/config";
 import fetch from "node-fetch";
+import Canvas from "canvas";
 
-const { wechatAppId, wechatSecret, douyinAppId, douyinSecret } = process.env;
+const { wechatAppId = "", wechatSecret = "", douyinAppId = "", douyinSecret = "" } = process.env;
 
 export default async (req, res) => {
   const { platform = "", image = "", code = "" } = req.body;
@@ -50,20 +51,64 @@ export default async (req, res) => {
 
     accessToken = accessTokenResponseJSON.data?.access_token;
 
-    checkResponse = await fetch("https://developer.toutiao.com/api/apps/censor/image", {
+    // Get base64. Image url may not work for tt. Use base64 instead
+    let imageBase64, payload;
+    const width = 640;
+    const height = 360;
+    const canvas = Canvas.createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+    const canvasImage = await Canvas.loadImage(image).catch((e) => {
+      console.error(e);
+    });
+    if (canvasImage) {
+      ctx.drawImage(canvasImage, 0, 0, width, height);
+      imageBase64 = canvas.toDataURL("image/jpeg", 1);
+      payload = {
+        targets: ["ad", "porn", "politics", "disgusting"],
+        tasks: [
+          {
+            image_data: imageBase64,
+          },
+        ],
+      };
+    } else {
+      payload = {
+        targets: ["ad", "porn", "politics", "disgusting"],
+        tasks: [
+          {
+            image: image,
+          },
+        ],
+      };
+    }
+
+    /*
+      This endpoint is broken
+    */
+    // checkResponse = await fetch("https://developer.toutiao.com/api/apps/censor/image", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     app_id: `${douyinAppId}`,
+    //     access_token: `${accessToken}`,
+    //     image: `${image}`,
+    //   }),
+    // }).catch((err) => console.error(err));
+
+    checkResponse = await fetch("https://developer.toutiao.com/api/v2/tags/image/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        app_id: `${douyinAppId}`,
-        access_token: `${accessToken}`,
-        image: `${image}`,
-      }),
+      headers: { "Content-Type": "application/json", "X-Token": accessToken },
+      body: JSON.stringify(payload),
     }).catch((err) => console.error(err));
 
     checkResponseJSON = await checkResponse.json();
 
-    // change 'error' of douyin response to "errcode"
-    checkResponseJSON["errcode"] = checkResponseJSON["error"];
+    // Process douyin response to cater to wechat "errcode"
+    checkResponseJSON["errcode"] =
+      checkResponseJSON.data[0].code === 0 &&
+      checkResponseJSON.data[0]?.predicts.every((item) => item.hit === false)
+        ? 0
+        : 1;
   }
 
   res.send(checkResponseJSON || {});
