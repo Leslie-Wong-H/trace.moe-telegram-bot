@@ -51,7 +51,7 @@ export default async (req, res) => {
 
     accessToken = accessTokenResponseJSON.data?.access_token;
 
-    // Get base64. Image url not working for tt, use base64 instead
+    // Get base64. Image url may not work for tt. Use base64 instead
     let imageBase64, payload;
     const width = 640;
     const height = 360;
@@ -61,33 +61,54 @@ export default async (req, res) => {
       console.error(e);
     });
     if (canvasImage) {
-      console.log("in");
       ctx.drawImage(canvasImage, 0, 0, width, height);
-      imageBase64 = canvas.toDataURL("image/jpeg", 1.0);
+      imageBase64 = canvas.toDataURL("image/jpeg", 1);
       payload = {
-        app_id: `${douyinAppId}`,
-        access_token: `${accessToken}`,
-        image_data: `${imageBase64}`,
+        targets: ["ad", "porn", "politics", "disgusting"],
+        tasks: [
+          {
+            image_data: imageBase64,
+          },
+        ],
       };
     } else {
-      console.log("out");
       payload = {
-        app_id: `${douyinAppId}`,
-        access_token: `${accessToken}`,
-        image: `${image}`,
+        targets: ["ad", "porn", "politics", "disgusting"],
+        tasks: [
+          {
+            image: image,
+          },
+        ],
       };
     }
 
-    checkResponse = await fetch("https://developer.toutiao.com/api/apps/censor/image", {
+    /*
+      This endpoint is broken
+    */
+    // checkResponse = await fetch("https://developer.toutiao.com/api/apps/censor/image", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({
+    //     app_id: `${douyinAppId}`,
+    //     access_token: `${accessToken}`,
+    //     image: `${image}`,
+    //   }),
+    // }).catch((err) => console.error(err));
+
+    checkResponse = await fetch("https://developer.toutiao.com/api/v2/tags/image/", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "X-Token": accessToken },
       body: JSON.stringify(payload),
     }).catch((err) => console.error(err));
 
     checkResponseJSON = await checkResponse.json();
 
-    // change 'error' of douyin response to "errcode"
-    checkResponseJSON["errcode"] = checkResponseJSON["error"];
+    // Process douyin response to cater to wechat "errcode"
+    checkResponseJSON["errcode"] =
+      checkResponseJSON.data[0].code === 0 &&
+      checkResponseJSON.data[0]?.predicts.every((item) => item.hit === false)
+        ? 0
+        : 1;
   }
 
   res.send(checkResponseJSON || {});
