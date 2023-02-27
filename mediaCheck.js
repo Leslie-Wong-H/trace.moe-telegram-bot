@@ -1,7 +1,8 @@
 import "dotenv/config";
 import fetch from "node-fetch";
+import Canvas from "canvas";
 
-const { wechatAppId, wechatSecret, douyinAppId, douyinSecret } = process.env;
+const { wechatAppId = "", wechatSecret = "", douyinAppId = "", douyinSecret = "" } = process.env;
 
 export default async (req, res) => {
   const { platform = "", image = "", code = "" } = req.body;
@@ -50,14 +51,37 @@ export default async (req, res) => {
 
     accessToken = accessTokenResponseJSON.data?.access_token;
 
-    checkResponse = await fetch("https://developer.toutiao.com/api/apps/censor/image", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    // Get base64. Image url not working for tt, use base64 instead
+    let imageBase64, payload;
+    const width = 640;
+    const height = 360;
+    const canvas = Canvas.createCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+    const canvasImage = await Canvas.loadImage(image).catch((e) => {
+      console.error(e);
+    });
+    if (canvasImage) {
+      console.log("in");
+      ctx.drawImage(canvasImage, 0, 0, width, height);
+      imageBase64 = canvas.toDataURL("image/jpeg", 1.0);
+      payload = {
+        app_id: `${douyinAppId}`,
+        access_token: `${accessToken}`,
+        image_data: `${imageBase64}`,
+      };
+    } else {
+      console.log("out");
+      payload = {
         app_id: `${douyinAppId}`,
         access_token: `${accessToken}`,
         image: `${image}`,
-      }),
+      };
+    }
+
+    checkResponse = await fetch("https://developer.toutiao.com/api/apps/censor/image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     }).catch((err) => console.error(err));
 
     checkResponseJSON = await checkResponse.json();
