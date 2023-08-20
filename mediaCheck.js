@@ -105,7 +105,7 @@ export default async (req, res) => {
 
     // Process douyin response to cater to wechat "errcode"
     checkResponseJSON["errcode"] =
-      checkResponseJSON.data?.error === 0 &&
+      checkResponseJSON.data?.code === 0 &&
       checkResponseJSON.data?.predicts.every((item) => item.hit === false)
         ? 0
         : 1;
