@@ -104,9 +104,11 @@ export default async (req, res) => {
     checkResponseJSON = await checkResponse.json();
 
     // Process douyin response to cater to wechat "errcode"
+    // Response Schema:
+    // https://developer.open-douyin.com/docs/resource/zh-CN/mini-game/develop/open-capacity/content-security/picture-detect/
     checkResponseJSON["errcode"] =
-      checkResponseJSON.data?.code === 0 &&
-      checkResponseJSON.data?.predicts.every((item) => item.hit === false)
+      checkResponseJSON.data?.every((item) => item?.code === 0) &&
+      checkResponseJSON.data?.every((item) => item?.predicts.every((subItem) => subItem.prob !== 1))
         ? 0
         : 1;
   }
