@@ -6,7 +6,7 @@ import Canvas from "canvas";
  * and being passed by mini-program to the search api
  */
 export default async (req, res) => {
-  const { url = "" } = req.query;
+  const { url = "", horizon = "" } = req.query;
 
   function error500(e, res) {
     console.log(e);
@@ -18,8 +18,14 @@ export default async (req, res) => {
       res.status(403).send("No URL attached");
       return;
     }
-    const width = 640;
-    const height = 360;
+    let width, height;
+    if (horizon) {
+      width = 270;
+      height = 480;
+    } else {
+      width = 640;
+      height = 360;
+    }
     const canvas = Canvas.createCanvas(width, height);
     const ctx = canvas.getContext("2d");
     const image = await Canvas.loadImage(url).catch((e) => {
