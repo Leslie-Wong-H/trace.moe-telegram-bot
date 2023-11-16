@@ -20,8 +20,8 @@ export default async (req, res) => {
     }
     let width, height;
     if (horizon) {
-      width = 270;
-      height = 480;
+      width = 230;
+      height = 340;
     } else {
       width = 640;
       height = 360;
