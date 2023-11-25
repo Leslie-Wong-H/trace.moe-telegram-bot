@@ -1,4 +1,6 @@
 import Canvas from "canvas";
+import fetch from "node-fetch";
+import sizeOf from "image-size";
 
 /**
  * use proxy.ultraman-shot.cc to proxy image,
@@ -6,7 +8,7 @@ import Canvas from "canvas";
  * and being passed by mini-program to the search api
  */
 export default async (req, res) => {
-  const { url = "", horizon = "" } = req.query;
+  const { url = "", horizon = "", custom = "" } = req.query;
 
   function error500(e, res) {
     console.log(e);
@@ -20,9 +22,18 @@ export default async (req, res) => {
     }
     let width, height;
     if (horizon) {
+      // Horizon, used in detail poster
       width = 230;
       height = 340;
+    } else if (custom) {
+      // Custom, keep the original resolution
+      const response = await fetch(url);
+      const buffer = await response.buffer();
+      const resolution = await sizeOf(buffer);
+      width = resolution["width"];
+      height = resolution["height"];
     } else {
+      // Landscape, used in query preview
       width = 640;
       height = 360;
     }
