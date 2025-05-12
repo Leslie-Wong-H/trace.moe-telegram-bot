@@ -14,27 +14,22 @@ export default async (req, res) => {
   const formData = new FormData();
   const blob = new Blob([image], { type: "image/png" });
   formData.append("image", blob, "image.png");
-  fetch(uploadUrl, {
+  const response = await fetch(uploadUrl, {
     method: "POST",
     // headers: {
     //   Authorization: apiToken,
     // },
     body: formData,
-  })
-    .then((response) => {
-      if (!response.ok) {
-        res.status(503).json({
-          error: `Network response was not OK. ${error}`,
-        });
-      }
-      return response.json();
-    })
-    .then((data) => {
-      res.send(`${data.data.url}`);
-    })
-    .catch((error) => {
-      res.status(503).json({
-        error: `Network response was not OK. ${error}`,
-      });
+  });
+  if (!response.ok) {
+    res.status(503).json({
+      error: `Network response was not OK. ${error}`,
     });
+  }
+  const data = await response.json().catch((error) => {
+    res.status(503).json({
+      error: `Network response was not OK. ${error}`,
+    });
+  });
+  res.send(`${data.data.url}`);
 };
