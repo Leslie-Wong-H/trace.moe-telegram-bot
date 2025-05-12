@@ -9,6 +9,7 @@ import douban from "./douban.js";
 import poster from "./poster.js";
 import proxy from "./proxy.js";
 import getImgUrl from "./getImgUrl.js";
+import getImgRemoteUrl from "./getImgRemoteUrl.js";
 import getImgBuffer from "./getImgBuffer.js";
 import mediaCheck from "./mediaCheck.js";
 
@@ -91,6 +92,12 @@ app.post(
   "/get-img-url",
   multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } }).any(),
   getImgUrl
+);
+
+app.post(
+  "/get-img-remote-url",
+  multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } }).any(),
+  getImgRemoteUrl
 );
 
 app.get("/get-img-buffer", getImgBuffer);
