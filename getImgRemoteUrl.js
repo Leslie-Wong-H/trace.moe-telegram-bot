@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { FormData } from "formdata-node";
 
 export default async (req, res) => {
   let image;
