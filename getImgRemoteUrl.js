@@ -62,7 +62,7 @@ export default async (req, res) => {
     });
 
     for (const file of files) {
-      await s3Client.send(
+      await s3.send(
         new PutObjectCommand({
           Bucket: bucketName,
           Body: file.Body,
