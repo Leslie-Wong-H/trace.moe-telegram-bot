@@ -17,7 +17,7 @@ class ProxyFetcher {
       console.log("Reading proxy list...");
       const url = `https://www.89ip.cn/index_${index}.html`;
       const response = await fetch(url, { headers: this.headers });
-      const html = response.data;
+      const html = await response.text();
       const $ = cheerio.load(html);
       const ips = $("tbody tr");
       const ip_list = [];
