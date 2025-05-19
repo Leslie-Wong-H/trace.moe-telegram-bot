@@ -5,6 +5,7 @@ import rateLimit from "express-rate-limit";
 import bodyParser from "body-parser";
 import multer from "multer";
 
+import anilist from "./anilist.js";
 import douban from "./douban.js";
 import poster from "./poster.js";
 import proxy from "./proxy.js";
@@ -81,6 +82,8 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   return res.send(`<meta http-equiv="Refresh" content="0; URL=https://www.ultraman-shot.cc/">`);
 });
+
+app.post("/anilist", anilist);
 
 app.post("/douban", douban);
 
