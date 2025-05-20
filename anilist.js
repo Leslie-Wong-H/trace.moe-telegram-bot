@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import HttpsProxyAgent from "https-proxy-agent";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import * as cheerio from "cheerio";
 import { randomInt } from "node:crypto";
 
@@ -61,7 +61,7 @@ export default async (req, res) => {
   try {
     const fetcher = new ProxyFetcher();
 
-    const ipList = await fetcher.get_ip_list(1);
+    const ipList = await fetcher.get_ip_list(randomInt(1, 21));
 
     const randomIP = ipList ? fetcher.get_random_ip(ipList) : "";
 
