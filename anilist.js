@@ -12,22 +12,22 @@ class ProxyFetcher {
     this.proxy = {};
   }
 
-  async get_ip_list(index) {
+  async get_ip_list() {
     try {
       console.log("Reading proxy list...");
-      const url = `https://www.89ip.cn/index_${index}.html`;
+      const url = atob(
+        "aHR0cHM6Ly9wcm94eWxpYi5jb20vZnJlZS1wcm94eS1saXN0Lz9saW1pdD0xMDAmc29ydF9ieT1sYXN0X2NoZWNrZWQmc29ydF9vcmRlcj1kZXNjJmNvdW50cnlfY29kZT1DTiZ0eXBlPUhUVFAmYW5vbnltaXR5PQ=="
+      );
       const response = await fetch(url, { headers: this.headers });
       const html = await response.text();
       const $ = cheerio.load(html);
-      const ips = $("tbody tr");
+      const ips = $("table tbody td:nth-child(1)");
       const ip_list = [];
       ips.each((i, element) => {
-        const tds = $(element).find("td");
-        const ip = $(tds[0])
+        const ipWithPort = $(element)
           .text()
-          .replace(/[^0-9\.]/g, "");
-        const port = $(tds[1]).text().replace(/\D/g, "");
-        ip_list.push(`${ip}:${port}`);
+          .replace(/[^0-9\:\.]/g, "");
+        ip_list.push(`${ipWithPort}`);
       });
       console.log("Get proxy ip list successfully!");
       return ip_list;
@@ -61,7 +61,7 @@ export default async (req, res) => {
   try {
     const fetcher = new ProxyFetcher();
 
-    const ipList = await fetcher.get_ip_list(randomInt(1, 21));
+    const ipList = await fetcher.get_ip_list();
 
     const randomIP = ipList ? fetcher.get_random_ip(ipList) : "";
 
