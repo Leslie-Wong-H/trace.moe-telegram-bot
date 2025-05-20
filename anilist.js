@@ -76,7 +76,7 @@ export default async (req, res) => {
         query: query,
         variables: { ids: ids },
       }),
-      agent: agent,
+      // agent: agent,
     }).catch((err) => console.error(err));
 
     let responseJSON = await response.json();
