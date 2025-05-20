@@ -62,13 +62,13 @@ export default async (req, res) => {
   } = req.body;
 
   try {
-    const fetcher = new ProxyFetcher();
+    // const fetcher = new ProxyFetcher();
 
-    const ipList = await fetcher.get_ip_list();
+    // const ipList = await fetcher.get_ip_list();
 
-    const randomIP = ipList ? fetcher.get_random_ip(ipList) : "";
+    // const randomIP = ipList ? fetcher.get_random_ip(ipList) : "";
 
-    const agent = randomIP ? new HttpsProxyAgent(randomIP) : undefined;
+    // const agent = randomIP ? new HttpsProxyAgent(randomIP) : undefined;
 
     let response = await fetch("https://trace.moe/anilist/", {
       method: "POST",
