@@ -1,4 +1,5 @@
 import Canvas from "canvas";
+import sharp from "sharp";
 import fetch from "node-fetch";
 import sizeOf from "image-size";
 
@@ -21,14 +22,14 @@ export default async (req, res) => {
       return;
     }
     let width, height;
+    const response = await fetch(url);
+    const buffer = await response.buffer();
     if (horizon) {
       // Horizon, used in detail poster
       width = 230;
       height = 340;
     } else if (custom) {
       // Custom, keep the original resolution
-      const response = await fetch(url);
-      const buffer = await response.buffer();
       const resolution = await sizeOf(buffer);
       width = resolution["width"];
       height = resolution["height"];
@@ -39,7 +40,9 @@ export default async (req, res) => {
     }
     const canvas = Canvas.createCanvas(width, height);
     const ctx = canvas.getContext("2d");
-    const image = await Canvas.loadImage(url).catch((e) => {
+    // Add webp proxy support using sharp
+    const canvasBuffer = await sharp(buffer).toFormat("png").toBuffer();
+    const image = await Canvas.loadImage(canvasBuffer).catch((e) => {
       error500(e, res);
     });
     if (image) {
