@@ -70,7 +70,7 @@ export default async (req, res) => {
 
     // const agent = randomIP ? new HttpsProxyAgent(randomIP) : undefined;
 
-    let response = await fetch("https://trace.moe/anilist/", {
+    let response = await fetch("https://graphql.anilist.co", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
