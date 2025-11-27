@@ -1,4 +1,6 @@
 import fetch from "node-fetch";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const anilistChinese = require("./anilist-chinese.json");
 
 export default async (req, res) => {
